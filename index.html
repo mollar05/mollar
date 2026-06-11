@@ -651,7 +651,7 @@ window.saveSession = async function() {
   }
 }
 
-// 세션 불러오기 (IndexedDB)
+// 세션 불러오기 (IndexedDB) - 수정본
 window.loadSession = async function() {
   try {
     setIOStatus('sessionStatus','info','불러오는 중...');
@@ -671,7 +671,17 @@ window.loadSession = async function() {
     classifier.setWeights(weightTensors);
     weightTensors.forEach(t => t.dispose());
 
-    labels = session.labels;
+    labels = session.labels || [];
+    const classesData = session.classesData || []; // 이제 정상적으로 데이터를 가져옵니다.
+
+    // 기존 클래스 UI 제거
+    document.getElementById('classes').innerHTML = '';
+
+    // ★ addClass 자체 기능을 활용해 UI와 데이터를 한 번에 복원
+    labels.forEach((label, i) => {
+      addClass(label, classesData[i] || '');
+    });
+
     document.getElementById('predictBtn').disabled = false;
     setIOStatus('sessionStatus','ok',`✓ 세션 복원 완료 — 클래스: ${labels.join(', ')}`);
     setStatus('ready', '세션 복원됨');
@@ -682,21 +692,27 @@ window.loadSession = async function() {
   }
 }
 
-// Export: model.json + weights.bin 다운로드
+// Export: model.json + weights.bin 다운로드 - 수정본
 window.exportModel = async function() {
   if (!classifier) { setIOStatus('exportStatus','err','먼저 학습을 실행하세요'); return; }
   try {
     document.getElementById('exportBtn').disabled = true;
     setIOStatus('exportStatus','info','내보내는 중...');
 
-    // labels를 모델 JSON에 userDefinedMetadata로 포함
+    // ★ 현재 화면에 입력된 텍스트 데이터 수집
+    const classesData = [];
+    document.querySelectorAll('.classData').forEach(el => {
+      classesData.push(el.value);
+    });
+
+    // labels와 classesData를 모델 JSON에 userDefinedMetadata로 포함
     await classifier.save(tf.io.withSaveHandler(async (artifacts) => {
-      // model.json: topology + weightsManifest + labels
       const manifest = artifacts.weightSpecs.map((spec, i) => ({ name: spec.name, shape: spec.shape, dtype: spec.dtype }));
       const modelJSON = {
         modelTopology: artifacts.modelTopology,
         weightsManifest: [{ paths: ['weights.bin'], weights: manifest }],
-        userDefinedMetadata: { labels }
+        // ★ userDefinedMetadata에 텍스트 데이터도 함께 저장
+        userDefinedMetadata: { labels, classesData }
       };
       const jsonBlob = new Blob([JSON.stringify(modelJSON)], { type: 'application/json' });
 
@@ -739,6 +755,7 @@ function checkImportReady() {
   if (_importJson && _importBin) setIOStatus('importStatus','info','두 파일 선택됨 — 불러오기 버튼을 누르세요');
 }
 
+// Import: 파일 선택 후 모델 및 UI 복원 - 수정본
 window.importModel = async function() {
   if (!_importJson || !_importBin) return;
   try {
@@ -748,25 +765,38 @@ window.importModel = async function() {
     const jsonText = await _importJson.text();
     const modelJSON = JSON.parse(jsonText);
 
-    // labels 복원 (있으면)
+    let classesData = [];
+    // labels와 텍스트 데이터 복원 추출
     if (modelJSON.userDefinedMetadata?.labels) {
       labels = modelJSON.userDefinedMetadata.labels;
+      classesData = modelJSON.userDefinedMetadata.classesData || [];
     } else {
-      // 클래스 박스에서 읽기
+      // 메타데이터가 없을 경우 기존 화면에서 추출
       labels = [];
       document.querySelectorAll('.className').forEach((e, i) => {
         labels.push(e.value.trim() || `클래스 ${i+1}`);
       });
     }
 
+    // ★ [추가] 파일에 저장되어 있던 텍스트 데이터로 화면 UI 재구축
+    if (modelJSON.userDefinedMetadata?.labels) {
+      document.getElementById('classes').innerHTML = '';
+      labels.forEach((label, i) => {
+        addClass(label, classesData[i] || '');
+      });
+    }
+
     const binBuffer = await _importBin.arrayBuffer();
 
     if (classifier) classifier.dispose();
-    classifier = await tf.loadLayersModel(tf.io.fromMemory(
-      modelJSON.modelTopology,
-      modelJSON.weightsManifest[0].weights,
-      binBuffer
-    ));
+
+    classifier = await tf.loadLayersModel(
+      tf.io.fromMemory({
+        modelTopology: modelJSON.modelTopology,
+        weightSpecs: modelJSON.weightsManifest[0].weights,
+        weightData: binBuffer
+      })
+    );
 
     document.getElementById('predictBtn').disabled = false;
     setStatus('ready', '모델 불러옴');
