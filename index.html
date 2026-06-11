@@ -112,6 +112,25 @@
   .io-status.err{background:rgba(244,63,94,.1);color:var(--danger);border:1px solid rgba(244,63,94,.25);display:block;}
   .io-status.info{background:rgba(0,229,255,.07);color:var(--accent);border:1px solid rgba(0,229,255,.18);display:block;}
   .export-tag{display:inline-block;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:#c4b5fd;font-family:'Space Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;margin-right:4px;}
+
+  /* ── API Demo Panel ── */
+  .api-code{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px 18px;font-family:'Space Mono',monospace;font-size:12px;line-height:1.9;overflow-x:auto;white-space:pre;color:#94a3b8;}
+  .api-code .kw{color:#7dd3fc;}
+  .api-code .fn{color:#a78bfa;}
+  .api-code .str{color:#86efac;}
+  .api-code .cmt{color:#475569;}
+  .api-code .ret{color:#fbbf24;}
+  .api-try-row{display:flex;gap:10px;margin-top:14px;}
+  .api-try-row input{flex:1;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Space Mono',monospace;font-size:13px;outline:none;transition:border-color .2s;}
+  .api-try-row input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(124,58,237,.1);}
+  .api-result-box{margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'Space Mono',monospace;font-size:12px;line-height:1.8;min-height:48px;color:var(--muted);}
+  .api-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-right:6px;}
+  .api-badge-get{background:rgba(16,185,129,.15);color:var(--accent3);border:1px solid rgba(16,185,129,.3);}
+  .api-method-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+  .api-method{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;}
+  .api-method-sig{font-family:'Space Mono',monospace;font-size:12px;color:var(--accent2);flex-shrink:0;min-width:180px;}
+  .api-method-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+  .api-method-ret{font-family:'Space Mono',monospace;font-size:11px;color:var(--warn);margin-top:3px;}
 </style>
 </head>
 <body>
@@ -266,9 +285,72 @@
     </div>
   </div>
 
-</div>
+  <!-- ── API Panel ── -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:#7dd3fc;box-shadow:0 0 8px #7dd3fc"></div>
+      🔌 window.TeachableTextAI — API
+    </div>
+    <div class="panel-body">
 
-<!-- Transformers.js — jsdelivr CDN (allowlist 통과) -->
+      <div class="api-method-list">
+        <div class="api-method">
+          <div>
+            <div class="api-method-sig">predict(text)</div>
+            <div class="api-method-ret">→ Promise&lt;{ label, confidence, scores }&gt;</div>
+          </div>
+          <div class="api-method-desc">텍스트를 분류합니다. 학습/로드 완료 후 사용 가능. <code style="font-size:11px;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:3px;">confidence</code>는 0~1 소수, <code style="font-size:11px;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:3px;">scores</code>는 전체 클래스 확률 객체.</div>
+        </div>
+        <div class="api-method">
+          <div>
+            <div class="api-method-sig">onReady(callback)</div>
+            <div class="api-method-ret">→ void · callback({ labels })</div>
+          </div>
+          <div class="api-method-desc">학습 또는 모델 로드가 완료되면 자동 호출. 이미 준비된 경우 즉시 실행.</div>
+        </div>
+        <div class="api-method">
+          <div>
+            <div class="api-method-sig">isReady()</div>
+            <div class="api-method-ret">→ boolean</div>
+          </div>
+          <div class="api-method-desc">지금 바로 예측 가능한지 확인.</div>
+        </div>
+        <div class="api-method">
+          <div>
+            <div class="api-method-sig">getLabels()</div>
+            <div class="api-method-ret">→ string[]</div>
+          </div>
+          <div class="api-method-desc">현재 등록된 클래스 레이블 목록 반환.</div>
+        </div>
+      </div>
+
+      <div class="api-code"><span class="cmt">// ① 학습 완료 후 자동 실행</span>
+<span class="kw">TeachableTextAI</span>.<span class="fn">onReady</span>(({ labels }) => {
+  console.<span class="fn">log</span>(<span class="str">'준비됨, 클래스:'</span>, labels);
+});
+
+<span class="cmt">// ② 직접 예측 호출</span>
+<span class="kw">const</span> result = <span class="kw">await</span> <span class="kw">TeachableTextAI</span>.<span class="fn">predict</span>(<span class="str">"안녕하세요"</span>);
+console.<span class="fn">log</span>(result.<span class="ret">label</span>);       <span class="cmt">// "인사"</span>
+console.<span class="fn">log</span>(result.<span class="ret">confidence</span>);  <span class="cmt">// 0.97</span>
+console.<span class="fn">log</span>(result.<span class="ret">scores</span>);      <span class="cmt">// { 인사: 0.97, 음식: 0.03 }</span>
+
+<span class="cmt">// ③ 준비 여부 확인 후 사용</span>
+<span class="kw">if</span> (<span class="kw">TeachableTextAI</span>.<span class="fn">isReady</span>()) {
+  <span class="kw">const</span> { label, confidence } = <span class="kw">await</span> <span class="kw">TeachableTextAI</span>.<span class="fn">predict</span>(inputText);
+}</div>
+
+      <div style="margin-top:18px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">▶ 라이브 테스트 — 학습 완료 후 사용 가능</div>
+      <div class="api-try-row">
+        <input id="apiInput" placeholder="테스트할 문장 입력..." onkeydown="if(event.key==='Enter') runApiTest()">
+        <button class="btn btn-primary" onclick="runApiTest()" id="apiBtn">API 호출</button>
+      </div>
+      <div class="api-result-box" id="apiResultBox">학습을 완료하면 여기서 API 응답을 확인할 수 있습니다.</div>
+
+    </div>
+  </div>
+
+</div>  <!-- /wrap --> — jsdelivr CDN (allowlist 통과) -->
 <script type="module">
 import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js';
 
@@ -467,6 +549,7 @@ window.trainModel = async function() {
   document.getElementById('saveBtn').disabled = false;
   document.getElementById('exportBtn').disabled = false;
   document.getElementById('result').innerHTML = '';
+  _fireReady();
 }
 
 // ── 예측 ─────────────────────────────────────────────────
@@ -592,6 +675,7 @@ window.loadSession = async function() {
     document.getElementById('predictBtn').disabled = false;
     setIOStatus('sessionStatus','ok',`✓ 세션 복원 완료 — 클래스: ${labels.join(', ')}`);
     setStatus('ready', '세션 복원됨');
+    _fireReady();
   } catch(e) {
     setIOStatus('sessionStatus','err','불러오기 실패: ' + e.message);
     console.error(e);
@@ -687,6 +771,7 @@ window.importModel = async function() {
     document.getElementById('predictBtn').disabled = false;
     setStatus('ready', '모델 불러옴');
     setIOStatus('importStatus','ok',`✓ 모델 로드 완료 — 클래스: ${labels.join(', ')}`);
+    _fireReady();
   } catch(e) {
     setIOStatus('importStatus','err','불러오기 실패: ' + e.message);
     console.error(e);
@@ -695,8 +780,108 @@ window.importModel = async function() {
   }
 }
 
-// 학습 완료 후 저장/내보내기 버튼 활성화 — trainModel 종료 지점에 훅
-const _origSetStatus = window.setStatus;
+// ══════════════════════════════════════════════════════════════
+//  🔌 window.TeachableTextAI  — Public API
+//  티처블 머신처럼 같은 페이지 어디서든, 또는 같은 HTML 내
+//  <script> 블록에서 바로 호출 가능.
+//
+//  ① TeachableTextAI.predict(text)
+//     → Promise<{ label, confidence, scores }>
+//
+//  ② TeachableTextAI.onReady(callback)
+//     → 학습/로드 완료 시 자동 호출. callback({ labels })
+//
+//  ③ TeachableTextAI.isReady()
+//     → boolean — 지금 당장 예측 가능한지 확인
+//
+//  ④ TeachableTextAI.getLabels()
+//     → string[] — 현재 클래스 레이블 목록
+// ══════════════════════════════════════════════════════════════
+
+const _readyCallbacks = [];
+let _apiReady = false;
+
+function _fireReady() {
+  _apiReady = true;
+  _readyCallbacks.forEach(cb => { try { cb({ labels: [...labels] }); } catch(e) {} });
+  _readyCallbacks.length = 0;
+}
+
+// 학습 완료 / 세션·파일 로드 완료 시 _fireReady() 호출은
+// trainModel / loadSession / importModel 끝에서 수행됨 (아래 패치)
+
+window.TeachableTextAI = {
+  /**
+   * 텍스트를 분류합니다.
+   * @param {string} text
+   * @returns {Promise<{label:string, confidence:number, scores:{[label:string]:number}}>}
+   *
+   * 예)
+   *   const result = await TeachableTextAI.predict("안녕하세요");
+   *   console.log(result.label);      // "인사"
+   *   console.log(result.confidence); // 0.97
+   *   console.log(result.scores);     // { 인사: 0.97, 음식: 0.03 }
+   */
+  predict: async function(text) {
+    if (!classifier || !extractor) throw new Error('모델이 준비되지 않았습니다. isReady()를 먼저 확인하세요.');
+    if (!text || !text.trim()) throw new Error('텍스트를 입력하세요.');
+    const feat = await embedSentences([text.trim()], true);
+    const predTensor = classifier.predict(feat);
+    const probs = Array.from(predTensor.dataSync());
+    feat.dispose(); predTensor.dispose();
+    const maxIdx = probs.indexOf(Math.max(...probs));
+    const scores = {};
+    probs.forEach((p, i) => { scores[labels[i]] = parseFloat(p.toFixed(4)); });
+    return { label: labels[maxIdx], confidence: parseFloat(probs[maxIdx].toFixed(4)), scores };
+  },
+
+  /** 학습/로드 완료 시 콜백 등록. 이미 준비된 상태면 즉시 호출. */
+  onReady: function(callback) {
+    if (_apiReady) { try { callback({ labels: [...labels] }); } catch(e) {} }
+    else _readyCallbacks.push(callback);
+  },
+
+  /** 지금 바로 예측 가능한지 확인 */
+  isReady: function() { return _apiReady && !!classifier; },
+
+  /** 현재 클래스 레이블 목록 */
+  getLabels: function() { return [...labels]; }
+};
+
+// ── API 라이브 테스트 (패널 내 데모용) ────────────────────────
+window.runApiTest = async function() {
+  const input = document.getElementById('apiInput').value.trim();
+  const box = document.getElementById('apiResultBox');
+  if (!input) return;
+  if (!window.TeachableTextAI.isReady()) {
+    box.innerHTML = '<span style="color:var(--danger)">⚠ 아직 준비되지 않았습니다. 먼저 학습을 실행하세요.</span>';
+    return;
+  }
+  box.innerHTML = '<span style="color:var(--muted)">호출 중...</span>';
+  document.getElementById('apiBtn').disabled = true;
+  try {
+    const t0 = performance.now();
+    const result = await window.TeachableTextAI.predict(input);
+    const ms = (performance.now() - t0).toFixed(0);
+    const scoresStr = Object.entries(result.scores)
+      .map(([k,v]) => `  <span style="color:var(--accent)">"${k}"</span>: <span style="color:var(--warn)">${v}</span>`)
+      .join(',\n');
+    box.innerHTML =
+`<span style="color:var(--accent3)">✓ ${ms}ms</span>  <span style="color:var(--muted)">// TeachableTextAI.predict("${input.replace(/"/g,'&quot;')}")</span>
+
+{
+  <span style="color:var(--accent)">label</span>:      <span style="color:var(--accent3)">"${result.label}"</span>,
+  <span style="color:var(--accent)">confidence</span>: <span style="color:var(--warn)">${result.confidence}</span>,
+  <span style="color:var(--accent)">scores</span>: {
+${scoresStr}
+  }
+}`;
+  } catch(e) {
+    box.innerHTML = `<span style="color:var(--danger)">오류: ${e.message}</span>`;
+  } finally {
+    document.getElementById('apiBtn').disabled = false;
+  }
+}
 
 // 시작
 loadModel();
