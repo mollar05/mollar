@@ -248,11 +248,11 @@
 
         <!-- SAVE CARD -->
         <div class="io-card">
-          <div class="io-card-title">💾 세션 저장 (브라우저)</div>
-          <div class="io-card-desc">학습된 가중치와 클래스 레이블을 <strong style="color:var(--text)">IndexedDB</strong>에 저장합니다. 페이지를 새로고침해도 유지됩니다.</div>
+          <div class="io-card-title">💾 세션 저장 (브라우저+불가)</div>
+          <div class="io-card-desc">모델 파일 불러오기, 모델 내보내기쓰시길 <p>참고로 모델 파일 불러오기는 파일 2개 넣을시 활성화됨</p></div>
           <div class="io-card-actions">
-            <button class="btn btn-save" id="saveBtn" onclick="saveSession()" disabled>↓ 세션 저장</button>
-            <button class="btn btn-load-file" id="loadSessionBtn" onclick="loadSession()">↑ 세션 불러오기</button>
+            <button class="btn btn-save" id="saveBtn" onclick="saveSession()" disabled>↓ 세션 저장 안됨</button>
+            <button class="btn btn-load-file" id="loadSessionBtn" onclick="loadSession()">↑ 세션 불러오기 사용 금지</button>
           </div>
           <div class="io-status" id="sessionStatus"></div>
         </div>
