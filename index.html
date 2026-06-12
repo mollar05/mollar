@@ -282,7 +282,7 @@
           <div class="io-card-desc">가중치와 클래스 정보를 <strong style="color:var(--text)">.mollar</strong> 파일 하나로 다운로드합니다. 나중에 이 페이지에 파일 하나만 올리면 바로 예측을 재개할 수 있습니다.</div>
           <div class="io-card-actions">
             <button class="btn btn-primary" id="exportBtn" onclick="exportModel()" disabled>⬇ 모델 내보내기 (.mollar)</button>
-            <button class="btn btn-save" id="exportHtmlBtn" onclick="exportHtml()" disabled>⬇ 불러오기용 HTML 다운로드</button>
+            <button class="btn btn-save" id="exportHtmlBtn" onclick="exportHtml()" disabled>⬇ 예제 완성버전 HTML 다운로드</button>
           </div>
           <div class="io-status" id="exportStatus"></div>
         </div>
@@ -408,7 +408,7 @@ console.<span class="fn">log</span>(<span class="kw">await</span> <span class="f
 <span class="str">&lt;/html&gt;</span></div>
 
       <!-- 예제 4: 라이브 테스트 -->
-      <div style="margin:20px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">▶ 라이브 테스트 — 학습 완료 후 사용 가능</div>
+      <div style="margin:20px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">▶ 콘솔에 어떻게 출력하는지 알려</div>
       <div class="api-try-row">
         <input id="apiInput" placeholder="테스트할 문장 입력..." onkeydown="if(event.key==='Enter') runApiTest()">
         <button class="btn btn-primary" onclick="runApiTest()" id="apiBtn">예측 실행</button>
