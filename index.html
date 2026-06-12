@@ -464,7 +464,7 @@ function setStatus(type, text) {
   const map = { idle:'badge-idle', ready:'badge-ready', training:'badge-training', loading:'badge-loading', error:'badge-error' };
   const badge = `<span class="status-badge ${map[type]||'badge-idle'}"><span class="pulse"></span>${text}</span>`;
   document.getElementById('statusBadge').innerHTML = type === 'error'
-    ? `<a href="${['https://mollar05.github.io/vrrr/','https://mollar05.github.io/chess-original-/'][Math.random()<.5?0:1]}" target="_blank" style="text-decoration:none;cursor:pointer;" title="도움말 페이지로 이동">${badge}</a>`
+    ? `<a href="#" onclick="window.open(['https://mollar05.github.io/vrrr/','https://mollar05.github.io/chess-original-/'][Math.random()<.5?0:1],'_blank');return false;" style="text-decoration:none;cursor:pointer;" title="도움말 페이지로 이동">${badge}</a>`
     : badge;
 }
 
