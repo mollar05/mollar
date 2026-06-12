@@ -813,7 +813,13 @@ window.exportModel = async function() {
 
     await classifier.save(tf.io.withSaveHandler(async (artifacts) => {
       // weights를 base64로 인코딩해 JSON 안에 인라인으로 포함 → 파일 하나로 완성
-      const weightBase64 = btoa(String.fromCharCode(...new Uint8Array(artifacts.weightData)));
+      const _wbytes = new Uint8Array(artifacts.weightData);
+      let _wbin = '';
+      const _CHUNK = 0x8000;
+      for (let i = 0; i < _wbytes.length; i += _CHUNK) {
+        _wbin += String.fromCharCode.apply(null, _wbytes.subarray(i, i + _CHUNK));
+      }
+      const weightBase64 = btoa(_wbin);
       const manifest = artifacts.weightSpecs.map(s => ({ name: s.name, shape: s.shape, dtype: s.dtype }));
       const mollar = {
         modelTopology: artifacts.modelTopology,
@@ -853,7 +859,13 @@ window.exportHtml = async function() {
     // .mollar 데이터를 인라인으로 내장
     let mollarData = null;
     await classifier.save(tf.io.withSaveHandler(async (artifacts) => {
-      const weightBase64 = btoa(String.fromCharCode(...new Uint8Array(artifacts.weightData)));
+      const _wbytes = new Uint8Array(artifacts.weightData);
+      let _wbin = '';
+      const _CHUNK = 0x8000;
+      for (let i = 0; i < _wbytes.length; i += _CHUNK) {
+        _wbin += String.fromCharCode.apply(null, _wbytes.subarray(i, i + _CHUNK));
+      }
+      const weightBase64 = btoa(_wbin);
       const manifest = artifacts.weightSpecs.map(s => ({ name: s.name, shape: s.shape, dtype: s.dtype }));
       mollarData = {
         modelTopology: artifacts.modelTopology,
