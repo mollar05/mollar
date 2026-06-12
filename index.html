@@ -167,6 +167,51 @@
 
 <div class="wrap">
 
+  <!-- ── 사용 방법 Panel ── -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="dot" style="background:var(--accent3);box-shadow:0 0 8px var(--accent3)"></div>
+      📖 사용 방법
+    </div>
+    <div class="panel-body">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">1</div>
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">클래스 추가 &amp; 예시 문장 입력</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.7;">상단 <strong style="color:var(--text)">+ 클래스 추가</strong> 버튼으로 카테고리를 만들고, 각 클래스 박스에 예시 문장을 한 줄에 하나씩 입력합니다. 클래스당 최소 5개 이상 입력할수록 정확도가 높아집니다.</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">2</div>
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">학습 파라미터 설정 후 학습 시작</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.7;"><strong style="color:var(--text)">Epochs</strong>(반복 횟수, 기본 60), <strong style="color:var(--text)">Hidden Units</strong>(모델 크기, 기본 64), <strong style="color:var(--text)">Learning Rate</strong>(학습 속도, 기본 0.001)를 조정하고 <strong style="color:var(--text)">▶ 학습 시작</strong>을 누릅니다. 진행 바에서 Loss와 Accuracy를 실시간으로 확인할 수 있습니다.</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">3</div>
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">예측 테스트</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.7;">학습 완료 후 <strong style="color:var(--text)">예측</strong> 패널에 문장을 입력하고 <strong style="color:var(--text)">분석</strong> 버튼을 누르면 각 클래스의 확률을 시각적으로 확인할 수 있습니다.</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">4</div>
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">모델 내보내기 &amp; 재사용</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.7;"><strong style="color:var(--text)">모델 저장 &amp; 불러오기</strong> 패널에서 <code style="font-size:11px;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:3px;">.mollar</code> 파일을 다운로드합니다. 다음에 이 페이지에 파일 하나만 올리면 재학습 없이 바로 예측을 재개할 수 있습니다. 위 활용 예제처럼 외부 프로젝트에서도 사용 가능합니다.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <div class="panel">
     <div class="panel-header"><div class="dot"></div>모델 로드 및 제어</div>
     <div class="panel-body">
@@ -237,7 +282,7 @@
           <div class="io-card-desc">가중치와 클래스 정보를 <strong style="color:var(--text)">.mollar</strong> 파일 하나로 다운로드합니다. 나중에 이 페이지에 파일 하나만 올리면 바로 예측을 재개할 수 있습니다.</div>
           <div class="io-card-actions">
             <button class="btn btn-primary" id="exportBtn" onclick="exportModel()" disabled>⬇ 모델 내보내기 (.mollar)</button>
-            <button class="btn btn-save" id="exportHtmlBtn" onclick="exportHtml()" disabled>⬇ HTML 예제 완성본 다운로드</button>
+            <button class="btn btn-save" id="exportHtmlBtn" onclick="exportHtml()" disabled>⬇ 불러오기용 HTML 다운로드</button>
           </div>
           <div class="io-status" id="exportStatus"></div>
         </div>
@@ -363,58 +408,13 @@ console.<span class="fn">log</span>(<span class="kw">await</span> <span class="f
 <span class="str">&lt;/html&gt;</span></div>
 
       <!-- 예제 4: 라이브 테스트 -->
-      <div style="margin:20px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">▶ 예제 결과 테스트</div>
+      <div style="margin:20px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">▶ 라이브 테스트 — 학습 완료 후 사용 가능</div>
       <div class="api-try-row">
         <input id="apiInput" placeholder="테스트할 문장 입력..." onkeydown="if(event.key==='Enter') runApiTest()">
         <button class="btn btn-primary" onclick="runApiTest()" id="apiBtn">예측 실행</button>
       </div>
-      <div class="api-result-box" id="apiResultBox">학습을 완료하면 여기서 예측 결과 콘솔 버전을 확인할 수 있습니다.</div>
+      <div class="api-result-box" id="apiResultBox">학습을 완료하면 여기서 예측 결과를 확인할 수 있습니다.</div>
 
-    </div>
-  </div>
-
-  <!-- ── 사용 방법 Panel ── -->
-  <div class="panel">
-    <div class="panel-header">
-      <div class="dot" style="background:var(--accent3);box-shadow:0 0 8px var(--accent3)"></div>
-      📖 사용 방법
-    </div>
-    <div class="panel-body">
-      <div style="display:flex;flex-direction:column;gap:14px;">
-
-        <div style="display:flex;gap:14px;align-items:flex-start;">
-          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">1</div>
-          <div>
-            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">클래스 추가 &amp; 예시 문장 입력</div>
-            <div style="font-size:13px;color:var(--muted);line-height:1.7;">상단 <strong style="color:var(--text)">+ 클래스 추가</strong> 버튼으로 카테고리를 만들고, 각 클래스 박스에 예시 문장을 한 줄에 하나씩 입력합니다. 클래스당 최소 5개 이상 입력할수록 정확도가 높아집니다.</div>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:14px;align-items:flex-start;">
-          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">2</div>
-          <div>
-            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">학습 파라미터 설정 후 학습 시작</div>
-            <div style="font-size:13px;color:var(--muted);line-height:1.7;"><strong style="color:var(--text)">Epochs</strong>(반복 횟수, 기본 60), <strong style="color:var(--text)">Hidden Units</strong>(모델 크기, 기본 64), <strong style="color:var(--text)">Learning Rate</strong>(학습 속도, 기본 0.001)를 조정하고 <strong style="color:var(--text)">▶ 학습 시작</strong>을 누릅니다. 진행 바에서 Loss와 Accuracy를 실시간으로 확인할 수 있습니다.</div>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:14px;align-items:flex-start;">
-          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">3</div>
-          <div>
-            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">예측 테스트</div>
-            <div style="font-size:13px;color:var(--muted);line-height:1.7;">학습 완료 후 <strong style="color:var(--text)">예측</strong> 패널에 문장을 입력하고 <strong style="color:var(--text)">분석</strong> 버튼을 누르면 각 클래스의 확률을 시각적으로 확인할 수 있습니다.</div>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:14px;align-items:flex-start;">
-          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">4</div>
-          <div>
-            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">모델 내보내기 &amp; 재사용</div>
-            <div style="font-size:13px;color:var(--muted);line-height:1.7;"><strong style="color:var(--text)">모델 저장 &amp; 불러오기</strong> 패널에서 <code style="font-size:11px;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:3px;">.mollar</code> 파일을 다운로드합니다. 다음에 이 페이지에 파일 하나만 올리면 재학습 없이 바로 예측을 재개할 수 있습니다. 위 활용 예제처럼 외부 프로젝트에서도 사용 가능합니다.</div>
-          </div>
-        </div>
-
-      </div>
     </div>
   </div>
 
@@ -462,8 +462,10 @@ let totalEpochs = 60;
 // ── 상태 UI ──────────────────────────────────────────────
 function setStatus(type, text) {
   const map = { idle:'badge-idle', ready:'badge-ready', training:'badge-training', loading:'badge-loading', error:'badge-error' };
-  document.getElementById('statusBadge').innerHTML =
-    `<span class="status-badge ${map[type]||'badge-idle'}"><span class="pulse"></span>${text}</span>`;
+  const badge = `<span class="status-badge ${map[type]||'badge-idle'}"><span class="pulse"></span>${text}</span>`;
+  document.getElementById('statusBadge').innerHTML = type === 'error'
+    ? `<a href="${['https://mollar05.github.io/vrrr/','https://mollar05.github.io/chess-original-/'][Math.random()<.5?0:1]}" target="_blank" style="text-decoration:none;cursor:pointer;" title="도움말 페이지로 이동">${badge}</a>`
+    : badge;
 }
 
 function setLoadBar(pct, label) {
