@@ -131,35 +131,13 @@
   .api-method-sig{font-family:'Space Mono',monospace;font-size:12px;color:var(--accent2);flex-shrink:0;min-width:180px;}
   .api-method-desc{font-size:12px;color:var(--muted);line-height:1.6;}
   .api-method-ret{font-family:'Space Mono',monospace;font-size:11px;color:var(--warn);margin-top:3px;}
-
-  /* ── Error Toast ── */
-  #errorToast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
-    background:#1a0a0f;border:1px solid rgba(244,63,94,.45);color:var(--danger);
-    font-family:'Space Mono',monospace;font-size:12px;line-height:1.6;
-    padding:12px 18px 12px 14px;border-radius:10px;max-width:560px;width:calc(100% - 40px);
-    box-shadow:0 8px 32px rgba(0,0,0,.6);z-index:9999;display:none;
-    animation:toastIn .25s ease;}
-  #errorToast .et-title{font-size:11px;text-transform:uppercase;letter-spacing:.08em;
-    color:var(--danger);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
-  #errorToast .et-msg{color:#fca5a5;font-size:12px;word-break:break-all;}
-  #errorToast .et-close{position:absolute;top:8px;right:10px;cursor:pointer;
-    color:var(--muted);font-size:14px;line-height:1;}
-  @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(28px)}
-    to{opacity:1;transform:translateX(-50%) translateY(0)}}
 </style>
 </head>
 <body>
 
-<div id="errorToast">
-  <div class="et-title">⚠ 오류 발생</div>
-  <div class="et-msg" id="errorMsg"></div>
-  <span class="et-close" onclick="document.getElementById('errorToast').style.display='none'">✕</span>
-</div>
-
 <header>
   <div class="logo-icon">🧠</div>
   <h1>TEACHABLE TEXT<span> / AI</span></h1>
-  <div style="margin-left:12px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);border-left:1px solid var(--border);padding-left:12px;">모델명: <span style="color:var(--accent)">mollar</span></div>
   <div style="margin-left:auto" id="statusBadge">
     <span class="status-badge badge-loading"><span class="pulse"></span>모델 로딩 중</span>
   </div>
@@ -167,47 +145,39 @@
 
 <div class="wrap">
 
-  <!-- ── 사용 방법 Panel ── -->
-  <div class="panel">
-    <div class="panel-header">
-      <div class="dot" style="background:var(--accent3);box-shadow:0 0 8px var(--accent3)"></div>
-      📖 사용 방법
-    </div>
-    <div class="panel-body">
-      <div style="display:flex;flex-direction:column;gap:14px;">
-
-        <div style="display:flex;gap:14px;align-items:flex-start;">
-          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">1</div>
-          <div>
-            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">클래스 추가 &amp; 예시 문장 입력</div>
-            <div style="font-size:13px;color:var(--muted);line-height:1.7;">상단 <strong style="color:var(--text)">+ 클래스 추가</strong> 버튼으로 카테고리를 만들고, 각 클래스 박스에 예시 문장을 한 줄에 하나씩 입력합니다. 클래스당 최소 5개 이상 입력할수록 정확도가 높아집니다.</div>
-          </div>
+  <div class="tl-banner">
+    <div class="icon">🤗</div>
+    <div>
+      <strong>Transformers.js 전이학습</strong>
+      <p>
+        Hugging Face의 <code style="background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;font-size:11px;">Xenova/multilingual-e5-small</code> 모델로 문장을 384차원 벡터로 임베딩합니다.
+        이 사전학습 인코더는 <strong style="color:var(--text)">고정(Frozen)</strong>하고, 그 위에 Dense 분류기만 TF.js로 학습합니다.
+      </p>
+      <div class="arch-pills" style="margin-top:10px;">
+        <div>
+          <div class="arch-pill frozen">multilingual-e5-small</div>
+          <div class="arch-sub">🔒 Frozen</div>
         </div>
-
-        <div style="display:flex;gap:14px;align-items:flex-start;">
-          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">2</div>
-          <div>
-            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">학습 파라미터 설정 후 학습 시작</div>
-            <div style="font-size:13px;color:var(--muted);line-height:1.7;"><strong style="color:var(--text)">Epochs</strong>(반복 횟수, 기본 60), <strong style="color:var(--text)">Hidden Units</strong>(모델 크기, 기본 64), <strong style="color:var(--text)">Learning Rate</strong>(학습 속도, 기본 0.001)를 조정하고 <strong style="color:var(--text)">▶ 학습 시작</strong>을 누릅니다. 진행 바에서 Loss와 Accuracy를 실시간으로 확인할 수 있습니다.</div>
-          </div>
+        <div class="arch-arrow">→</div>
+        <div>
+          <div class="arch-pill frozen">384d 임베딩</div>
+          <div class="arch-sub">🔒 Frozen</div>
         </div>
-
-        <div style="display:flex;gap:14px;align-items:flex-start;">
-          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">3</div>
-          <div>
-            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">예측 테스트</div>
-            <div style="font-size:13px;color:var(--muted);line-height:1.7;">학습 완료 후 <strong style="color:var(--text)">예측</strong> 패널에 문장을 입력하고 <strong style="color:var(--text)">분석</strong> 버튼을 누르면 각 클래스의 확률을 시각적으로 확인할 수 있습니다.</div>
-          </div>
+        <div class="arch-arrow">→</div>
+        <div>
+          <div class="arch-pill trainable">Dense(ReLU)</div>
+          <div class="arch-sub">🔥 학습</div>
         </div>
-
-        <div style="display:flex;gap:14px;align-items:flex-start;">
-          <div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0891b2);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">4</div>
-          <div>
-            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--text);margin-bottom:4px;">모델 내보내기 &amp; 재사용</div>
-            <div style="font-size:13px;color:var(--muted);line-height:1.7;"><strong style="color:var(--text)">모델 저장 &amp; 불러오기</strong> 패널에서 <code style="font-size:11px;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:3px;">.mollar</code> 파일을 다운로드합니다. 다음에 이 페이지에 파일 하나만 올리면 재학습 없이 바로 예측을 재개할 수 있습니다. 위 활용 예제처럼 외부 프로젝트에서도 사용 가능합니다.</div>
-          </div>
+        <div class="arch-arrow">→</div>
+        <div>
+          <div class="arch-pill trainable">Dropout</div>
+          <div class="arch-sub">🔥 학습</div>
         </div>
-
+        <div class="arch-arrow">→</div>
+        <div>
+          <div class="arch-pill trainable">Softmax</div>
+          <div class="arch-sub">🔥 학습</div>
+        </div>
       </div>
     </div>
   </div>
@@ -276,25 +246,41 @@
 
       <div class="io-grid">
 
+        <!-- SAVE CARD -->
+        <div class="io-card">
+          <div class="io-card-title">💾 세션 저장 (브라우저)</div>
+          <div class="io-card-desc">학습된 가중치와 클래스 레이블을 <strong style="color:var(--text)">IndexedDB</strong>에 저장합니다. 페이지를 새로고침해도 유지됩니다.</div>
+          <div class="io-card-actions">
+            <button class="btn btn-save" id="saveBtn" onclick="saveSession()" disabled>↓ 세션 저장</button>
+            <button class="btn btn-load-file" id="loadSessionBtn" onclick="loadSession()">↑ 세션 불러오기</button>
+          </div>
+          <div class="io-status" id="sessionStatus"></div>
+        </div>
+
         <!-- EXPORT CARD -->
         <div class="io-card">
-          <div class="io-card-title">📦 모델 내보내기 <span class="export-tag">.mollar 단일 파일</span></div>
-          <div class="io-card-desc">가중치와 클래스 정보를 <strong style="color:var(--text)">.mollar</strong> 파일 하나로 다운로드합니다. 서버 URL을 입력하면 다운로드와 동시에 자동으로 업로드됩니다.</div>
-          <input id="serverUrlInput" type="hidden" value="https://mollar-severe.onrender.com">
+          <div class="io-card-title">📦 모델 내보내기 <span class="export-tag">model.json + weights.bin</span></div>
+          <div class="io-card-desc">가중치를 파일로 다운로드합니다. 다른 HTML에서 <code style="font-size:11px;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:3px;">tf.loadLayersModel()</code>로 바로 사용 가능합니다.</div>
           <div class="io-card-actions">
-            <button class="btn btn-primary" id="exportBtn" onclick="exportModel()" disabled>⬇ 모델 내보내기 (.mollar)</button>
-            <button class="btn btn-save" id="exportHtmlBtn" onclick="exportHtml()" disabled>⬇ 불러오기용 HTML 다운로드</button>
+            <button class="btn btn-primary" id="exportBtn" onclick="exportModel()" disabled>⬇ model.json + weights.bin</button>
+            <button class="btn btn-ghost" onclick="window.open('demo-consumer.html','_blank')">🔌 외부 사용 페이지 열기</button>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <input id="serverUrlInput" type="text" placeholder="https://your-app.onrender.com" style="flex:1;min-width:200px;background:rgba(255,255,255,.04);color:#fff;border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:8px 12px;font-size:12px;outline:none;">
+            <button class="btn btn-primary" id="uploadBtn" onclick="uploadToServer()" disabled>🚀 서버로 전송 (API 등록)</button>
           </div>
           <div class="io-status" id="exportStatus"></div>
         </div>
 
         <!-- IMPORT CARD -->
         <div class="io-card" style="grid-column:1/-1">
-          <div class="io-card-title">📂 모델 불러오기</div>
-          <div class="io-card-desc">내보낸 <strong style="color:var(--text)">.mollar</strong> 파일을 선택하면 바로 예측을 재개할 수 있습니다. 클래스 이름과 학습 데이터도 자동으로 복원됩니다.</div>
+          <div class="io-card-title">📂 모델 파일 불러오기</div>
+          <div class="io-card-desc">내보낸 <strong style="color:var(--text)">model.json</strong>과 <strong style="color:var(--text)">weights.bin</strong> 파일을 선택하면 바로 예측에 사용할 수 있습니다. 클래스 이름도 함께 저장된 경우 자동으로 복원됩니다.</div>
           <div class="io-card-actions" style="align-items:center;flex-wrap:wrap;gap:10px;">
-            <label class="file-drop-label" for="mollarFileInput">📂 .mollar 파일 선택</label>
-            <input type="file" id="mollarFileInput" accept=".mollar" style="display:none" onchange="handleMollarSelect(this)">
+            <label class="file-drop-label" for="modelJsonInput">📄 model.json 선택</label>
+            <input type="file" id="modelJsonInput" accept=".json" style="display:none" onchange="handleModelJsonSelect(this)">
+            <label class="file-drop-label" for="weightsBinInput">📦 weights.bin 선택</label>
+            <input type="file" id="weightsBinInput" accept=".bin" style="display:none" onchange="handleWeightsBinSelect(this)">
             <button class="btn btn-load-file" id="importBtn" onclick="importModel()" disabled>불러와서 예측 시작</button>
           </div>
           <div class="io-status" id="importStatus"></div>
@@ -304,178 +290,74 @@
     </div>
   </div>
 
-  <!-- ── 모델 다운로드 & 활용 예제 Panel ── -->
+  <!-- ── API Panel ── -->
   <div class="panel">
     <div class="panel-header">
       <div class="dot" style="background:#7dd3fc;box-shadow:0 0 8px #7dd3fc"></div>
-      📦 학습 완료 모델 다운로드 &amp; 활용 예제
+      🔌 window.TeachableTextAI — API
     </div>
     <div class="panel-body">
 
-      <div style="margin-bottom:20px;font-size:13px;color:var(--muted);line-height:1.8;">
-        학습이 끝나면 <strong style="color:var(--text)">.mollar</strong> 파일 하나를 다운로드해 아래 예제처럼 어디서든 바로 사용할 수 있습니다.
+      <div class="api-method-list">
+        <div class="api-method">
+          <div>
+            <div class="api-method-sig">predict(text)</div>
+            <div class="api-method-ret">→ Promise&lt;{ label, confidence, scores }&gt;</div>
+          </div>
+          <div class="api-method-desc">텍스트를 분류합니다. 학습/로드 완료 후 사용 가능. <code style="font-size:11px;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:3px;">confidence</code>는 0~1 소수, <code style="font-size:11px;background:rgba(255,255,255,.06);padding:1px 5px;border-radius:3px;">scores</code>는 전체 클래스 확률 객체.</div>
+        </div>
+        <div class="api-method">
+          <div>
+            <div class="api-method-sig">onReady(callback)</div>
+            <div class="api-method-ret">→ void · callback({ labels })</div>
+          </div>
+          <div class="api-method-desc">학습 또는 모델 로드가 완료되면 자동 호출. 이미 준비된 경우 즉시 실행.</div>
+        </div>
+        <div class="api-method">
+          <div>
+            <div class="api-method-sig">isReady()</div>
+            <div class="api-method-ret">→ boolean</div>
+          </div>
+          <div class="api-method-desc">지금 바로 예측 가능한지 확인.</div>
+        </div>
+        <div class="api-method">
+          <div>
+            <div class="api-method-sig">getLabels()</div>
+            <div class="api-method-ret">→ string[]</div>
+          </div>
+          <div class="api-method-desc">현재 등록된 클래스 레이블 목록 반환.</div>
+        </div>
       </div>
 
-      <!-- 예제 1: 기본 예측 -->
-      <div style="margin-bottom:8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">예제 1 — HTML에서 바로 불러와 예측</div>
-      <div class="api-code"><span class="cmt">&lt;!-- ① TF.js 및 Transformers.js 로드 --&gt;</span>
-<span class="str">&lt;script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"&gt;&lt;/script&gt;</span>
+      <div class="api-code"><span class="cmt">// ① 학습 완료 후 자동 실행</span>
+<span class="kw">TeachableTextAI</span>.<span class="fn">onReady</span>(({ labels }) => {
+  console.<span class="fn">log</span>(<span class="str">'준비됨, 클래스:'</span>, labels);
+});
 
-<span class="cmt">&lt;!-- ② 모델 파일을 같은 폴더에 두고 로드 --&gt;</span>
-<span class="kw">const</span> model = <span class="kw">await</span> tf.<span class="fn">loadLayersModel</span>(<span class="str">'model.json'</span>);
+<span class="cmt">// ② 직접 예측 호출</span>
+<span class="kw">const</span> result = <span class="kw">await</span> <span class="kw">TeachableTextAI</span>.<span class="fn">predict</span>(<span class="str">"안녕하세요"</span>);
+console.<span class="fn">log</span>(result.<span class="ret">label</span>);       <span class="cmt">// "인사"</span>
+console.<span class="fn">log</span>(result.<span class="ret">confidence</span>);  <span class="cmt">// 0.97</span>
+console.<span class="fn">log</span>(result.<span class="ret">scores</span>);      <span class="cmt">// { 인사: 0.97, 음식: 0.03 }</span>
 
-<span class="cmt">// ③ 텍스트 임베딩 (Transformers.js 필요)</span>
-<span class="kw">import</span> { pipeline } <span class="kw">from</span> <span class="str">'@xenova/transformers'</span>;
-<span class="kw">const</span> extractor = <span class="kw">await</span> <span class="fn">pipeline</span>(<span class="str">'feature-extraction'</span>, <span class="str">'Xenova/multilingual-e5-small'</span>);
-
-<span class="kw">async function</span> <span class="fn">predict</span>(text) {
-  <span class="kw">const</span> out = <span class="kw">await</span> <span class="fn">extractor</span>([<span class="str">`query: ${text}`</span>], { pooling: <span class="str">'mean'</span>, normalize: <span class="ret">true</span> });
-  <span class="kw">const</span> tensor = tf.<span class="fn">tensor2d</span>([Array.<span class="fn">from</span>(out.data)]);
-  <span class="kw">const</span> probs  = Array.<span class="fn">from</span>(model.<span class="fn">predict</span>(tensor).<span class="fn">dataSync</span>());
-  <span class="kw">return</span> probs.<span class="fn">indexOf</span>(Math.<span class="fn">max</span>(...probs)); <span class="cmt">// 가장 높은 클래스 인덱스</span>
+<span class="cmt">// ③ 준비 여부 확인 후 사용</span>
+<span class="kw">if</span> (<span class="kw">TeachableTextAI</span>.<span class="fn">isReady</span>()) {
+  <span class="kw">const</span> { label, confidence } = <span class="kw">await</span> <span class="kw">TeachableTextAI</span>.<span class="fn">predict</span>(inputText);
 }</div>
 
-      <!-- 예제 2: Node.js -->
-      <div style="margin:20px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">예제 2 — Node.js 서버에서 사용</div>
-      <div class="api-code"><span class="cmt">// npm install @tensorflow/tfjs-node @xenova/transformers</span>
-<span class="kw">const</span> tf = <span class="fn">require</span>(<span class="str">'@tensorflow/tfjs-node'</span>);
-<span class="kw">const</span> { pipeline } = <span class="kw">await import</span>(<span class="str">'@xenova/transformers'</span>);
-
-<span class="kw">const</span> model     = <span class="kw">await</span> tf.<span class="fn">loadLayersModel</span>(<span class="str">'file://./model.json'</span>);
-<span class="kw">const</span> extractor = <span class="kw">await</span> <span class="fn">pipeline</span>(<span class="str">'feature-extraction'</span>, <span class="str">'Xenova/multilingual-e5-small'</span>);
-<span class="kw">const</span> labels    = [<span class="str">'인사'</span>, <span class="str">'음식'</span>]; <span class="cmt">// model.json 의 userDefinedMetadata.labels 에서 읽어도 됩니다</span>
-
-<span class="kw">async function</span> <span class="fn">classify</span>(text) {
-  <span class="kw">const</span> out   = <span class="kw">await</span> <span class="fn">extractor</span>([<span class="str">`query: ${text}`</span>], { pooling: <span class="str">'mean'</span>, normalize: <span class="ret">true</span> });
-  <span class="kw">const</span> probs = Array.<span class="fn">from</span>(model.<span class="fn">predict</span>(tf.<span class="fn">tensor2d</span>([Array.<span class="fn">from</span>(out.data)])).<span class="fn">dataSync</span>());
-  <span class="kw">const</span> idx   = probs.<span class="fn">indexOf</span>(Math.<span class="fn">max</span>(...probs));
-  <span class="kw">return</span> { label: labels[idx], confidence: probs[idx].<span class="fn">toFixed</span>(<span class="ret">4</span>) };
-}
-
-console.<span class="fn">log</span>(<span class="kw">await</span> <span class="fn">classify</span>(<span class="str">'안녕하세요'</span>)); <span class="cmt">// { label: '인사', confidence: '0.9742' }</span></div>
-
-      <!-- 예제 3: 완성된 HTML -->
-      <div style="margin:20px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">예제 3 — 완성된 HTML 파일 (복붙 후 바로 사용)</div>
-      <div class="api-code"><span class="cmt">&lt;!-- model.mollar 파일과 같은 폴더에 저장하세요 --&gt;</span>
-<span class="str">&lt;!DOCTYPE html&gt;</span>
-<span class="str">&lt;html lang="ko"&gt;</span>
-<span class="str">&lt;head&gt;</span>
-<span class="str">  &lt;meta charset="UTF-8"&gt;</span>
-<span class="str">  &lt;title&gt;mollar 예측기&lt;/title&gt;</span>
-<span class="str">  &lt;script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"&gt;&lt;/script&gt;</span>
-<span class="str">&lt;/head&gt;</span>
-<span class="str">&lt;body&gt;</span>
-<span class="str">  &lt;input id="inp" placeholder="문장을 입력하세요" style="width:300px;padding:8px"&gt;</span>
-<span class="str">  &lt;button onclick="run()"&gt;예측&lt;/button&gt;</span>
-
-<span class="str">  &lt;script type="module"&gt;</span>
-<span class="str">  import { pipeline } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js';</span>
-
-<span class="cmt">  // ① .mollar 파일 로드</span>
-<span class="kw">  const</span> mollar   = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'model.mollar'</span>).<span class="fn">then</span>(r => r.<span class="fn">json</span>());
-<span class="kw">  const</span> labels   = mollar.userDefinedMetadata.labels;
-
-<span class="cmt">  // base64 weights → ArrayBuffer</span>
-<span class="kw">  const</span> binStr   = <span class="fn">atob</span>(mollar.weightDataBase64);
-<span class="kw">  const</span> binBuf   = <span class="kw">new</span> <span class="fn">Uint8Array</span>(binStr.length);
-<span class="kw">  for</span> (<span class="kw">let</span> i = <span class="ret">0</span>; i &lt; binStr.length; i++) binBuf[i] = binStr.<span class="fn">charCodeAt</span>(i);
-
-<span class="kw">  const</span> model     = <span class="kw">await</span> tf.<span class="fn">loadLayersModel</span>(tf.io.<span class="fn">fromMemory</span>({
-    modelTopology: mollar.modelTopology,
-    weightSpecs:   mollar.weightsManifest[<span class="ret">0</span>].weights,
-    weightData:    binBuf.buffer
-  }));
-
-<span class="cmt">  // ② 임베딩 모델 로드</span>
-<span class="kw">  const</span> extractor = <span class="kw">await</span> <span class="fn">pipeline</span>(<span class="str">'feature-extraction'</span>, <span class="str">'Xenova/multilingual-e5-small'</span>);
-
-<span class="cmt">  // ③ 예측 함수</span>
-<span class="kw">  async function</span> <span class="fn">predict</span>(text) {
-    <span class="kw">const</span> out   = <span class="kw">await</span> <span class="fn">extractor</span>([<span class="str">`query: </span>${text}<span class="str">`</span>], { pooling: <span class="str">'mean'</span>, normalize: <span class="ret">true</span> });
-    <span class="kw">const</span> probs = Array.<span class="fn">from</span>(model.<span class="fn">predict</span>(tf.<span class="fn">tensor2d</span>([Array.<span class="fn">from</span>(out.data)])).<span class="fn">dataSync</span>());
-    <span class="kw">const</span> idx   = probs.<span class="fn">indexOf</span>(Math.<span class="fn">max</span>(...probs));
-    <span class="kw">return</span> { label: labels[idx], confidence: probs[idx].<span class="fn">toFixed</span>(<span class="ret">4</span>), scores: <span class="fn">Object</span>.<span class="fn">fromEntries</span>(labels.<span class="fn">map</span>((l,i) => [l, probs[i].<span class="fn">toFixed</span>(<span class="ret">4</span>)])) };
-  }
-
-<span class="cmt">  // ④ 버튼 연결</span>
-  window.<span class="fn">run</span> = <span class="kw">async</span> () => {
-    <span class="kw">const</span> text = document.<span class="fn">getElementById</span>(<span class="str">'inp'</span>).value.<span class="fn">trim</span>();
-    <span class="kw">if</span> (!text) <span class="kw">return</span>;
-    <span class="kw">const</span> result = <span class="kw">await</span> <span class="fn">predict</span>(text);
-    console.<span class="fn">log</span>(result); <span class="cmt">// { label: '인사', confidence: '0.97', scores: {...} }</span>
-  };
-<span class="str">  &lt;/script&gt;</span>
-<span class="str">&lt;/body&gt;</span>
-<span class="str">&lt;/html&gt;</span></div>
-
-      <!-- 예제 4: 라이브 테스트 -->
-      <div style="margin:20px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">▶ 라이브 테스트 — 학습 완료 후 사용 가능</div>
+      <div style="margin-top:18px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">▶ 라이브 테스트 — 학습 완료 후 사용 가능</div>
       <div class="api-try-row">
         <input id="apiInput" placeholder="테스트할 문장 입력..." onkeydown="if(event.key==='Enter') runApiTest()">
-        <button class="btn btn-primary" onclick="runApiTest()" id="apiBtn">예측 실행</button>
+        <button class="btn btn-primary" onclick="runApiTest()" id="apiBtn">API 호출</button>
       </div>
-      <div class="api-result-box" id="apiResultBox">학습을 완료하면 여기서 예측 결과를 확인할 수 있습니다.</div>
-
-      <!-- 예제 5: 서버 API 이용 버전 -->
-      <div style="margin:20px 0 8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">예제 5 — 서버 API 이용 버전</div>
-      <div class="api-code"><span class="cmt">&lt;!-- Transformers.js로 임베딩 생성 후 서버에 전송 --&gt;</span>
-<span class="str">&lt;script type="module"&gt;</span>
-<span class="kw">import</span> { pipeline } <span class="kw">from</span> <span class="str">'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js'</span>;
-
-<span class="kw">const</span> SERVER    = <span class="str" id="example5ServerUrl">'https://mollar-severe.onrender.com'</span>;
-<span class="kw">const</span> extractor = <span class="kw">await</span> <span class="fn">pipeline</span>(<span class="str">'feature-extraction'</span>, <span class="str">'Xenova/multilingual-e5-small'</span>);
-
-<span class="kw">async function</span> <span class="fn">classify</span>(text) {
-  <span class="cmt">// ① 브라우저에서 임베딩 생성</span>
-  <span class="kw">const</span> out       = <span class="kw">await</span> <span class="fn">extractor</span>([<span class="str">`query: ${text}`</span>], { pooling: <span class="str">'mean'</span>, normalize: <span class="ret">true</span> });
-  <span class="kw">const</span> embedding = Array.<span class="fn">from</span>(out.data);
-
-  <span class="cmt">// ② 서버로 전송 → 예측 결과 수신</span>
-  <span class="kw">const</span> res    = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">`${SERVER}/predict`</span>, {
-    method:  <span class="str">'POST'</span>,
-    headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
-    body:    JSON.<span class="fn">stringify</span>({ embedding })
-  });
-  <span class="kw">return await</span> res.<span class="fn">json</span>();
-}
-
-<span class="kw">const</span> result = <span class="kw">await</span> <span class="fn">classify</span>(<span class="str">'안녕하세요'</span>);
-console.<span class="fn">log</span>(result);
-<span class="cmt">// { label: '인사', confidence: 0.97, scores: { 인사: 0.97, 음식: 0.03 } }</span>
-<span class="str">&lt;/script&gt;</span></div>
+      <div class="api-result-box" id="apiResultBox">학습을 완료하면 여기서 API 응답을 확인할 수 있습니다.</div>
 
     </div>
   </div>
 
-</div>  <!-- /wrap -->
+</div>  <!-- /wrap --> — jsdelivr CDN (allowlist 통과) -->
 <script type="module">
 import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js';
-
-
-// ── 에러 토스트 표시 ──────────────────────────────────────
-const _errMsgs = {
-  'Failed to fetch': '네트워크 오류: 모델 파일을 다운로드할 수 없습니다. 인터넷 연결을 확인하세요.',
-  'NetworkError': '네트워크 오류: 인터넷 연결을 확인하세요.',
-  'Out of memory': '메모리 부족: 브라우저 탭을 줄이거나 페이지를 새로고침하세요.',
-  'Cannot read prop': '내부 오류: 모델이 아직 준비되지 않았습니다. 로드 완료 후 다시 시도하세요.',
-  'not compiled': '모델 컴파일 오류: 페이지를 새로고침 후 다시 학습하세요.',
-  'No backend': 'TF.js 백엔드를 초기화할 수 없습니다. 브라우저가 WebGL을 지원하는지 확인하세요.',
-};
-function showError(e, context) {
-  const raw = (e && (e.message || String(e))) || '알 수 없는 오류';
-  let friendly = '';
-  for (const [key, msg] of Object.entries(_errMsgs)) {
-    if (raw.toLowerCase().includes(key.toLowerCase())) { friendly = msg; break; }
-  }
-  const display = friendly
-    ? `${friendly}<br><span style="font-size:10px;color:var(--muted)">(${context ? context+': ' : ''}${raw})</span>`
-    : `${context ? '[' + context + '] ' : ''}${raw}`;
-  document.getElementById('errorMsg').innerHTML = display;
-  const toast = document.getElementById('errorToast');
-  toast.style.display = 'block';
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => { toast.style.display = 'none'; }, 7000);
-}
 
 // 캐시를 브라우저 IndexedDB에 저장 (재로드 시 재다운로드 없음)
 env.allowLocalModels = false;
@@ -491,10 +373,8 @@ let totalEpochs = 60;
 // ── 상태 UI ──────────────────────────────────────────────
 function setStatus(type, text) {
   const map = { idle:'badge-idle', ready:'badge-ready', training:'badge-training', loading:'badge-loading', error:'badge-error' };
-  const badge = `<span class="status-badge ${map[type]||'badge-idle'}"><span class="pulse"></span>${text}</span>`;
-  document.getElementById('statusBadge').innerHTML = type === 'error'
-    ? `<a href="${['https://mollar05.github.io/vrrr/','https://mollar05.github.io/chess-original-/'][Math.random()<.5?0:1]}" target="_blank" style="text-decoration:none;cursor:pointer;" title="도움말 페이지로 이동">${badge}</a>`
-    : badge;
+  document.getElementById('statusBadge').innerHTML =
+    `<span class="status-badge ${map[type]||'badge-idle'}"><span class="pulse"></span>${text}</span>`;
 }
 
 function setLoadBar(pct, label) {
@@ -527,7 +407,7 @@ async function loadModel() {
   } catch (e) {
     setLoadBar(0, '✗ 로드 실패: ' + e.message);
     setStatus('error', '로드 실패');
-    showError(e, '모델 로드');
+    console.error(e);
   }
 }
 
@@ -614,7 +494,7 @@ window.trainModel = async function() {
   try {
     features = await embedSentences(allSentences, false); // [N, 384]
   } catch(e) {
-    showError(e, '임베딩');
+    alert('임베딩 실패: ' + e.message);
     setStatus('error', '임베딩 오류');
     document.getElementById('trainBtn').disabled = false;
     return;
@@ -649,17 +529,6 @@ window.trainModel = async function() {
     metrics: ['accuracy']
   });
 
-  // 정확도를 직접 계산하는 헬퍼
-  // classifier.predict()는 항상 Dropout 비활성 상태(추론 모드)로 실행됨
-  function computeAccuracy(featTensor, labelArr) {
-    return tf.tidy(() => {
-      const probs   = classifier.predict(featTensor); // [N, C], dropout OFF
-      const predIdx = probs.argMax(1).arraySync();    // [N]
-      const correct = predIdx.filter((p, i) => p === labelArr[i]).length;
-      return correct / labelArr.length;
-    });
-  }
-
   await classifier.fit(features, y, {
     epochs: totalEpochs,
     batchSize: Math.max(4, Math.min(32, allSentences.length)),
@@ -670,9 +539,7 @@ window.trainModel = async function() {
         document.getElementById('progressFill').style.width = pct.toFixed(0) + '%';
         document.getElementById('statEpoch').textContent = `${epoch+1} / ${totalEpochs}`;
         document.getElementById('statLoss').textContent = logs.loss.toFixed(4);
-        // 전체 데이터 기준 실제 정확도 (Dropout OFF, 매 epoch 직접 계산)
-        const realAcc = computeAccuracy(features, allLabels);
-        document.getElementById('statAcc').textContent = (realAcc * 100).toFixed(1) + '%';
+        document.getElementById('statAcc').textContent = ((logs.accuracy||0)*100).toFixed(1) + '%';
         await tf.nextFrame();
       }
     }
@@ -684,9 +551,9 @@ window.trainModel = async function() {
   setStatus('ready', '학습 완료');
   document.getElementById('trainBtn').disabled = false;
   document.getElementById('predictBtn').disabled = false;
+  document.getElementById('saveBtn').disabled = false;
   document.getElementById('exportBtn').disabled = false;
-  document.getElementById('exportHtmlBtn').disabled = false;
-  document.getElementById('result').innerHTML = '';
+  document.getElementById('uploadBtn').disabled = false;
   _fireReady();
 }
 
@@ -783,7 +650,7 @@ window.saveSession = async function() {
     setIOStatus('sessionStatus','ok','✓ 세션 저장 완료 (IndexedDB)');
   } catch(e) {
     setIOStatus('sessionStatus','err','저장 실패: ' + e.message);
-    showError(e, '세션 저장');
+    console.error(e);
   } finally {
     document.getElementById('saveBtn').disabled = false;
   }
@@ -826,213 +693,155 @@ window.loadSession = async function() {
     _fireReady();
   } catch(e) {
     setIOStatus('sessionStatus','err','불러오기 실패: ' + e.message);
-    showError(e, '세션 불러오기');
+    console.error(e);
   }
 }
 
-// Export: .mollar 단일 파일 다운로드 + 서버 자동 업로드
+// Export: model.json + weights.bin 다운로드 - 수정본
 window.exportModel = async function() {
   if (!classifier) { setIOStatus('exportStatus','err','먼저 학습을 실행하세요'); return; }
   try {
     document.getElementById('exportBtn').disabled = true;
     setIOStatus('exportStatus','info','내보내는 중...');
 
+    // ★ 현재 화면에 입력된 텍스트 데이터 수집
     const classesData = [];
-    document.querySelectorAll('.classData').forEach(el => classesData.push(el.value));
+    document.querySelectorAll('.classData').forEach(el => {
+      classesData.push(el.value);
+    });
 
+    // labels와 classesData를 모델 JSON에 userDefinedMetadata로 포함
     await classifier.save(tf.io.withSaveHandler(async (artifacts) => {
-      const weightBase64 = btoa(String.fromCharCode(...new Uint8Array(artifacts.weightData)));
-      const manifest = artifacts.weightSpecs.map(s => ({ name: s.name, shape: s.shape, dtype: s.dtype }));
-      const mollar = {
+      const manifest = artifacts.weightSpecs.map((spec, i) => ({ name: spec.name, shape: spec.shape, dtype: spec.dtype }));
+      const modelJSON = {
         modelTopology: artifacts.modelTopology,
         weightsManifest: [{ paths: ['weights.bin'], weights: manifest }],
-        weightDataBase64: weightBase64,
+        // ★ userDefinedMetadata에 텍스트 데이터도 함께 저장
         userDefinedMetadata: { labels, classesData }
       };
+      const jsonBlob = new Blob([JSON.stringify(modelJSON)], { type: 'application/json' });
 
-      const mollarJson = JSON.stringify(mollar);
+      // weights.bin
+      const binBlob = new Blob([artifacts.weightData], { type: 'application/octet-stream' });
 
-      // 파일 다운로드
-      const blob = new Blob([mollarJson], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'model.mollar';
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      // 다운로드
+      [['model.json', jsonBlob], ['weights.bin', binBlob]].forEach(([name, blob]) => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      });
 
-      // 서버 URL 있으면 자동 업로드
-      const serverUrl = document.getElementById('serverUrlInput').value.trim().replace(/\/$/, '');
-      if (serverUrl) {
-        setIOStatus('exportStatus','info','서버에 업로드 중...');
-        try {
-          const formData = new FormData();
-          formData.append('file', new Blob([mollarJson], { type: 'application/json' }), 'model.mollar');
-          const res = await fetch(`${serverUrl}/upload`, { method: 'POST', body: formData });
-          const json = await res.json();
-          if (json.status === 'ok') {
-            setIOStatus('exportStatus','ok',`✓ 다운로드 + 서버 업로드 완료 — 클래스: ${json.labels.join(', ')}`);
-          const ex5 = document.getElementById('example5ServerUrl');
-          if (ex5) ex5.textContent = `'${serverUrl}'`;
-          } else {
-            setIOStatus('exportStatus','ok','✓ 다운로드 완료 (서버 응답 오류)');
-          }
-        } catch(uploadErr) {
-          setIOStatus('exportStatus','ok','✓ 다운로드 완료 (서버 업로드 실패: ' + uploadErr.message + ')');
-        }
-      } else {
-        setIOStatus('exportStatus','ok','✓ model.mollar 다운로드 완료');
-      }
-
+      setIOStatus('exportStatus','ok','✓ model.json + weights.bin 다운로드 완료');
       return { modelArtifactsInfo: { dateSaved: new Date(), modelTopologyType: 'JSON' } };
     }));
   } catch(e) {
     setIOStatus('exportStatus','err','내보내기 실패: ' + e.message);
-    showError(e, '모델 내보내기');
+    console.error(e);
   } finally {
     document.getElementById('exportBtn').disabled = false;
   }
 }
 
-// 불러오기용 HTML 다운로드
-window.exportHtml = async function() {
+// 서버 API로 전송: model.json + weights.bin을 base64로 /upload에 전송
+window.uploadToServer = async function() {
   if (!classifier) { setIOStatus('exportStatus','err','먼저 학습을 실행하세요'); return; }
+  const serverUrl = document.getElementById('serverUrlInput').value.trim().replace(/\/$/, '');
+  if (!serverUrl) { setIOStatus('exportStatus','err','서버 주소를 입력하세요'); return; }
+
   try {
-    document.getElementById('exportHtmlBtn').disabled = true;
-    setIOStatus('exportStatus','info','HTML 생성 중...');
+    document.getElementById('uploadBtn').disabled = true;
+    setIOStatus('exportStatus','info','서버로 전송 중...');
 
-    const classesData = [];
-    document.querySelectorAll('.classData').forEach(el => classesData.push(el.value));
-
-    // .mollar 데이터를 인라인으로 내장
-    let mollarData = null;
     await classifier.save(tf.io.withSaveHandler(async (artifacts) => {
-      const weightBase64 = btoa(String.fromCharCode(...new Uint8Array(artifacts.weightData)));
-      const manifest = artifacts.weightSpecs.map(s => ({ name: s.name, shape: s.shape, dtype: s.dtype }));
-      mollarData = {
+      const manifest = artifacts.weightSpecs.map((spec) => ({ name: spec.name, shape: spec.shape, dtype: spec.dtype }));
+      const modelJson = {
         modelTopology: artifacts.modelTopology,
         weightsManifest: [{ paths: ['weights.bin'], weights: manifest }],
-        weightDataBase64: weightBase64,
-        userDefinedMetadata: { labels, classesData }
+        userDefinedMetadata: { labels }
       };
+
+      const bytes = new Uint8Array(artifacts.weightData);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const weightsBase64 = btoa(binary);
+
+      const res = await fetch(`${serverUrl}/upload`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ modelJson, weightsBase64 })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+
+      setIOStatus('exportStatus','ok',`✓ 서버 등록 완료 — 클래스: ${data.labels.join(', ')} · API: POST ${serverUrl}/predict`);
       return { modelArtifactsInfo: { dateSaved: new Date(), modelTopologyType: 'JSON' } };
     }));
-
-    const mollarJson = JSON.stringify(mollarData);
-
-    const html = `<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>mollar 예측기</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"><\/script>
-  <style>
-    body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f5f5f5; }
-    .box { background: #fff; border-radius: 10px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,.1); width: 360px; }
-    input { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; margin-bottom: 10px; }
-    button { width: 100%; padding: 10px; background: #6d28d9; color: #fff; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-    #status { margin-top: 8px; font-size: 12px; color: #888; text-align: center; }
-  </style>
-</head>
-<body>
-<div class="box">
-  <input id="inp" placeholder="문장을 입력하세요" onkeydown="if(event.key==='Enter')run()">
-  <button id="btn" onclick="run()" disabled>예측 (콘솔 확인)</button>
-  <div id="status">모델 로딩 중...</div>
-</div>
-<script type="module">
-import { pipeline } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js';
-
-const MOLLAR = ${mollarJson};
-
-const binStr = atob(MOLLAR.weightDataBase64);
-const binBuf = new Uint8Array(binStr.length);
-for (let i = 0; i < binStr.length; i++) binBuf[i] = binStr.charCodeAt(i);
-
-const model = await tf.loadLayersModel(tf.io.fromMemory({
-  modelTopology: MOLLAR.modelTopology,
-  weightSpecs:   MOLLAR.weightsManifest[0].weights,
-  weightData:    binBuf.buffer
-}));
-
-const labels    = MOLLAR.userDefinedMetadata.labels;
-const extractor = await pipeline('feature-extraction', 'Xenova/multilingual-e5-small');
-
-document.getElementById('btn').disabled = false;
-document.getElementById('status').textContent = '준비 완료 — 클래스: ' + labels.join(', ');
-
-async function predict(text) {
-  const out   = await extractor([\`query: \${text}\`], { pooling: 'mean', normalize: true });
-  const probs = Array.from(model.predict(tf.tensor2d([Array.from(out.data)])).dataSync());
-  const idx   = probs.indexOf(Math.max(...probs));
-  return { label: labels[idx], confidence: parseFloat(probs[idx].toFixed(4)), scores: Object.fromEntries(labels.map((l,i) => [l, parseFloat(probs[i].toFixed(4))])) };
-}
-
-window.run = async () => {
-  const text = document.getElementById('inp').value.trim();
-  if (!text) return;
-  const result = await predict(text);
-  console.log(result);
-};
-<\/script>
-</body>
-</html>`;
-
-    const blob = new Blob([html], { type: 'text/html' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'mollar-predictor.html';
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-
-    setIOStatus('exportStatus','ok','✓ mollar-predictor.html 다운로드 완료');
   } catch(e) {
-    setIOStatus('exportStatus','err','HTML 생성 실패: ' + e.message);
-    showError(e, 'HTML 내보내기');
+    setIOStatus('exportStatus','err','서버 전송 실패: ' + e.message);
+    console.error(e);
   } finally {
-    document.getElementById('exportHtmlBtn').disabled = false;
+    document.getElementById('uploadBtn').disabled = false;
   }
 }
 
-// Import: .mollar 파일 선택
-let _mollarFile = null;
+// Import: 파일 선택 상태 추적
+let _importJson = null, _importBin = null;
 
-window.handleMollarSelect = function(input) {
-  _mollarFile = input.files[0] || null;
-  const btn = document.getElementById('importBtn');
-  btn.disabled = !_mollarFile;
-  if (_mollarFile) setIOStatus('importStatus','info',`${_mollarFile.name} 선택됨 — 불러오기 버튼을 누르세요`);
+window.handleModelJsonSelect = function(input) {
+  _importJson = input.files[0] || null;
+  checkImportReady();
+}
+window.handleWeightsBinSelect = function(input) {
+  _importBin = input.files[0] || null;
+  checkImportReady();
+}
+function checkImportReady() {
+  document.getElementById('importBtn').disabled = !(_importJson && _importBin);
+  if (_importJson && _importBin) setIOStatus('importStatus','info','두 파일 선택됨 — 불러오기 버튼을 누르세요');
 }
 
-// Import: .mollar 파일 하나로 모델 복원
+// Import: 파일 선택 후 모델 및 UI 복원 - 수정본
 window.importModel = async function() {
-  if (!_mollarFile) return;
+  if (!_importJson || !_importBin) return;
   try {
     document.getElementById('importBtn').disabled = true;
     setIOStatus('importStatus','info','파일 로드 중...');
 
-    const jsonText = await _mollarFile.text();
-    const mollar = JSON.parse(jsonText);
+    const jsonText = await _importJson.text();
+    const modelJSON = JSON.parse(jsonText);
 
-    // base64 weights → ArrayBuffer
-    const binStr = atob(mollar.weightDataBase64);
-    const binBuf = new Uint8Array(binStr.length);
-    for (let i = 0; i < binStr.length; i++) binBuf[i] = binStr.charCodeAt(i);
+    let classesData = [];
+    // labels와 텍스트 데이터 복원 추출
+    if (modelJSON.userDefinedMetadata?.labels) {
+      labels = modelJSON.userDefinedMetadata.labels;
+      classesData = modelJSON.userDefinedMetadata.classesData || [];
+    } else {
+      // 메타데이터가 없을 경우 기존 화면에서 추출
+      labels = [];
+      document.querySelectorAll('.className').forEach((e, i) => {
+        labels.push(e.value.trim() || `클래스 ${i+1}`);
+      });
+    }
 
-    // 메타데이터 복원
-    const classesData = mollar.userDefinedMetadata?.classesData || [];
-    labels = mollar.userDefinedMetadata?.labels || [];
+    // ★ [추가] 파일에 저장되어 있던 텍스트 데이터로 화면 UI 재구축
+    if (modelJSON.userDefinedMetadata?.labels) {
+      document.getElementById('classes').innerHTML = '';
+      labels.forEach((label, i) => {
+        addClass(label, classesData[i] || '');
+      });
+    }
 
-    document.getElementById('classes').innerHTML = '';
-    labels.forEach((label, i) => addClass(label, classesData[i] || ''));
+    const binBuffer = await _importBin.arrayBuffer();
 
     if (classifier) classifier.dispose();
+
     classifier = await tf.loadLayersModel(
       tf.io.fromMemory({
-        modelTopology: mollar.modelTopology,
-        weightSpecs: mollar.weightsManifest[0].weights,
-        weightData: binBuf.buffer
+        modelTopology: modelJSON.modelTopology,
+        weightSpecs: modelJSON.weightsManifest[0].weights,
+        weightData: binBuffer
       })
     );
 
@@ -1042,7 +851,7 @@ window.importModel = async function() {
     _fireReady();
   } catch(e) {
     setIOStatus('importStatus','err','불러오기 실패: ' + e.message);
-    showError(e, '모델 불러오기');
+    console.error(e);
   } finally {
     document.getElementById('importBtn').disabled = false;
   }
@@ -1151,16 +960,8 @@ ${scoresStr}
   }
 }
 
-// 전역 예외 → 토스트
-window.onerror = function(msg, src, line, col, err) {
-  showError(err || { message: msg }, `전역 오류 (${src ? src.split('/').pop() : ''}:${line})`);
-};
-window.onunhandledrejection = function(ev) {
-  showError(ev.reason || { message: String(ev.reason) }, '비동기 오류');
-};
-
 // 시작
 loadModel();
 </script>
 </body>
-  </html>
+</html>
